@@ -264,11 +264,12 @@ async function saveWA(){
 }
 
 function doLogin(){
-  var v = document.getElementById('pwd-input').value;
+  var v = document.getElementById('pwd-input').value.trim();
   if(v === PASS){
     sessionStorage.setItem('mb_auth','1');
     document.getElementById('login-screen').style.display='none';
     document.getElementById('main').style.display='block';
+    document.getElementById('login-err').style.display='none';
     initApp();
   } else {
     document.getElementById('login-err').style.display='block';
