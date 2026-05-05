@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    background: #0d0812;
+    font-family: 'Montserrat', sans-serif;
+    color: #c0a8d8;
+    position: relative;
+  }
+
+  .bg {
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 50% 40% at 10% 20%, rgba(100,40,160,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 50% at 90% 80%, rgba(120,50,180,0.12) 0%, transparent 70%),
+      #0d0812;
+    z-index: 0;
+  }
+
+  .page {
+    position: relative; z-index: 1;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 3rem 2rem 5rem;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 0.5px solid #3a1a5a;
+  }
+
+  .logo-mark {
+    display: flex; align-items: center; justify-content: center;
+    gap: 10px;
+    margin-bottom: 1.2rem;
+  }
+  .logo-line { flex: 1; max-width: 60px; height: 0.5px; background: #5a2a8a; }
+  .logo-icon { font-size: 1.1rem; color: #9a60c0; letter-spacing: 0.1em; }
+
+  .store-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    color: #d0b0e8;
+    text-transform: uppercase;
+  }
+
+  .page-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: #7a50a0;
+    margin-top: 0.4rem;
+    letter-spacing: 0.06em;
+  }
+
+  .update-badge {
+    display: inline-block;
+    margin-top: 1rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #5a3a7a;
+    border: 0.5px solid #3a1a5a;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+
+  /* Intro box */
+  .intro-box {
+    background: rgba(80,30,120,0.12);
+    border: 0.5px solid #4a1a7a;
+    border-left: 3px solid #8a4acf;
+    border-radius: 2px;
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 2.5rem;
+  }
+  .intro-box p {
+    font-size: 0.82rem;
+    line-height: 1.8;
+    color: #a080c0;
+  }
+
+  /* Sections */
+  .section {
+    margin-bottom: 2.2rem;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .section-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.75rem;
+    color: #6a3a9a;
+    letter-spacing: 0.1em;
+    min-width: 24px;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #c890e8;
+    letter-spacing: 0.05em;
+    flex: 1;
+  }
+
+  .section-icon {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: rgba(100,40,160,0.2);
+    border: 0.5px solid #5a2a8a;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .section-icon svg { width: 14px; height: 14px; stroke: #9a60c0; }
+
+  .section-body {
+    padding-left: 36px;
+  }
+
+  .section-body p, .section-body li {
+    font-size: 0.8rem;
+    line-height: 1.9;
+    color: #9070b0;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-body ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .section-body ul li {
+    padding-left: 1.2rem;
+    position: relative;
+  }
+
+  .section-body ul li::before {
+    content: '◆';
+    position: absolute; left: 0;
+    font-size: 0.4rem;
+    color: #7a3aaa;
+    top: 6px;
+  }
+
+  .highlight-bad {
+    background: rgba(160,40,80,0.1);
+    border: 0.5px solid #6a1a3a;
+    border-radius: 2px;
+    padding: 0.9rem 1.1rem;
+    margin-top: 0.8rem;
+  }
+  .highlight-bad p {
+    color: #c06080 !important;
+    font-weight: 500;
+    font-size: 0.78rem !important;
+  }
+
+  .highlight-ok {
+    background: rgba(60,120,80,0.1);
+    border: 0.5px solid #1a5a3a;
+    border-radius: 2px;
+    padding: 0.9rem 1.1rem;
+    margin-top: 0.8rem;
+  }
+  .highlight-ok p {
+    color: #70c090 !important;
+    font-size: 0.78rem !important;
+  }
+
+  .divider-section {
+    height: 0.5px;
+    background: linear-gradient(to right, transparent, #3a1a5a, transparent);
+    margin: 1.8rem 0;
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 0.5px solid #2a1040;
+    text-align: center;
+  }
+
+  .footer-text {
+    font-size: 0.7rem;
+    color: #4a2a6a;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    line-height: 2;
+  }
+
+  .whatsapp-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 1.2rem;
+    padding: 0.8rem 1.8rem;
+    background: rgba(80,30,120,0.2);
+    border: 0.5px solid #6a3a9a;
+    border-radius: 2px;
+    text-decoration: none;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #c090e8;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .whatsapp-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(100,40,180,0.3);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section:nth-child(1) { animation-delay: 0.1s; }
+  .section:nth-child(2) { animation-delay: 0.18s; }
+  .section:nth-child(3) { animation-delay: 0.26s; }
+  .section:nth-child(4) { animation-delay: 0.34s; }
+  .section:nth-child(5) { animation-delay: 0.42s; }
+  .section:nth-child(6) { animation-delay: 0.50s; }
+  .section:nth-child(7) { animation-delay: 0.58s; }
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo-mark">
+      <div class="logo-line"></div>
+      <span class="logo-icon">✦ MEDUSA BOUTIQUE ✦</span>
+      <div class="logo-line"></div>
+    </div>
+    <div class="store-name">Políticas de Compra</div>
+    <div class="page-title">Términos y condiciones para nuestras clientas</div>
+    <div class="update-badge">Vigente desde 2025 · Bucaramanga, Santander</div>
+  </div>
+
+  <!-- Intro -->
+  <div class="intro-box">
+    <p>Al realizar una compra en <strong style="color:#c090e8;">Medusa Boutique</strong>, ya sea de forma presencial o a través de nuestros canales digitales, la clienta acepta automáticamente todas las políticas aquí descritas. Te pedimos leerlas con atención antes de confirmar tu pedido.</p>
+  </div>
+
+  <!-- Sección 1 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <span class="section-title">Política de devoluciones</span>
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14l-4-4 4-4M5 10h11a4 4 0 010 8h-1"/></svg>
+      </div>
+    </div>
+    <div class="section-body">
+      <p>Queremos que estés feliz con tu compra. Sin embargo, contamos con condiciones claras para gestionar devoluciones:</p>
+      <div class="highlight-bad">
+        <p>✕ &nbsp;No se aceptan devoluciones de prendas que hayan sido usadas, lavadas o que presenten olores, manchas o señales de uso.</p>
+      </div>
+      <div class="highlight-bad">
+        <p>✕ &nbsp;No se aceptan devoluciones si la prenda fue usada en algún evento, aunque sea por pocas horas.</p>
+      </div>
+      <div class="highlight-ok">
+        <p>✓ &nbsp;Se aceptan cambios o devoluciones únicamente si la prenda llega en mal estado o diferente a lo pedido, reportado dentro de las 24 horas siguientes a la recepción.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider-section"></div>
+
+  <!-- Sección 2 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <span class="section-title">Cambios de talla o referencia</span>
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
+      </div>
+    </div>
+    <div class="section-body">
+      <ul>
+        <li>Los cambios de talla se permiten dentro de los <strong style="color:#c090e8;">3 días calendario</strong> después de recibida la prenda.</li>
+        <li>La prenda debe estar sin usar, con etiquetas originales y en su empaque.</li>
+        <li>El cambio queda sujeto a disponibilidad de inventario. Si no hay la talla disponible, se emite un bono por el mismo valor.</li>
+        <li>El costo de envío para el cambio corre por cuenta de la clienta.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider-section"></div>
+
+  <!-- Sección 3 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <span class="section-title">Condiciones de pago y confirmación</span>
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+      </div>
+    </div>
+    <div class="section-body">
+      <ul>
+        <li>Todo pedido se confirma únicamente con el <strong style="color:#c090e8;">pago total o anticipo del 50%</strong> del valor.</li>
+        <li>El pedido no queda separado sin pago. No garantizamos disponibilidad si no se confirma el pago.</li>
+        <li>Aceptamos transferencias bancarias, Nequi, Daviplata y efectivo en punto físico.</li>
+        <li>Una vez confirmado el pago, se enviará comprobante de compra por WhatsApp.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider-section"></div>
+
+  <!-- Sección 4 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <span class="section-title">Envíos y tiempos de entrega</span>
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="21" r="1"/><circle cx="20" cy="21" r="1"/></svg>
+      </div>
+    </div>
+    <div class="section-body">
+      <ul>
+        <li>Los envíos se realizan a través de transportadoras de confianza. El tiempo estimado es de <strong style="color:#c090e8;">2 a 5 días hábiles</strong> según la ciudad.</li>
+        <li>El valor del envío es asumido por la clienta, salvo promociones especiales.</li>
+        <li>Una vez despachado el paquete, se comparte el número de guía. <strong style="color:#c090e8;">Medusa Boutique no se hace responsable por demoras de la transportadora.</strong></li>
+        <li>Si el paquete se pierde por error de la transportadora, se adelantará el proceso de reclamación, pero no garantizamos reposición inmediata.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider-section"></div>
+
+  <!-- Sección 5 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <span class="section-title">Prendas en descuento o promoción</span>
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L15 8M9 8.5h.01M14.5 14h.01"/><path d="M3 12l2-2V6a1 1 0 011-1h4l2-2 2 2h4a1 1 0 011 1v4l2 2-2 2v4a1 1 0 01-1 1h-4l-2 2-2-2H6a1 1 0 01-1-1v-4L3 12z"/></svg>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="highlight-bad">
+        <p>✕ &nbsp;Las prendas compradas en descuento, liquidación o promoción <strong>NO tienen cambio ni devolución</strong> bajo ninguna circunstancia.</p>
+      </div>
+      <p style="margin-top: 0.8rem;">Te recomendamos verificar bien talla y referencia antes de confirmar tu compra en promoción.</p>
+    </div>
+  </div>
+
+  <div class="divider-section"></div>
+
+  <!-- Sección 6 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <span class="section-title">Cuidado de las prendas</span>
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+    </div>
+    <div class="section-body">
+      <ul>
+        <li>Cada prenda incluye etiqueta con instrucciones de lavado. <strong style="color:#c090e8;">Medusa Boutique no se responsabiliza</strong> por daños causados por mal manejo o lavado incorrecto.</li>
+        <li>El desteñido, encogimiento o deterioro por uso inadecuado no aplica como causal de cambio o devolución.</li>
+        <li>Recomendamos seguir siempre las indicaciones del fabricante.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider-section"></div>
+
+  <!-- Sección 7 -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <span class="section-title">Aceptación de políticas</span>
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+      </div>
+    </div>
+    <div class="section-body">
+      <p>Al realizar cualquier compra —presencial o virtual— en <strong style="color:#c090e8;">Medusa Boutique</strong>, la clienta declara haber leído y aceptado estas políticas en su totalidad. Estas condiciones pueden actualizarse sin previo aviso y la versión vigente siempre estará disponible en nuestros canales oficiales.</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-text">
+      ¿Tienes dudas sobre nuestras políticas?<br>
+      Contáctanos antes de realizar tu compra
+    </div>
+    <a class="whatsapp-btn" href="https://wa.me/573044827502" target="_blank">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="#c090e8"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+      Escribir al WhatsApp
+    </a>
+    <div class="footer-text" style="margin-top: 1.5rem; font-size: 0.55rem; color: #3a1a5a;">
+      MEDUSA BOUTIQUE · BUCARAMANGA, SANTANDER · COLOMBIA
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

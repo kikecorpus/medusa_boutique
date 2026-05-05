@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Medusa Boutique</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d0812;font-family:'Montserrat',sans-serif;color:#c0a8d8;min-height:100vh}
+
+/* LOGIN */
+.login-screen{position:fixed;inset:0;background:#0d0812;display:flex;align-items:center;justify-content:center;z-index:999;padding:20px}
+.login-box{background:#130a1e;border:0.5px solid #4a1a7a;border-radius:12px;padding:2.5rem 2rem;width:100%;max-width:320px;text-align:center}
+.login-logo{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;letter-spacing:0.2em;color:#d0b0e8;text-transform:uppercase;margin-bottom:4px}
+.login-sub{font-size:0.6rem;letter-spacing:0.35em;color:#6a3a9a;text-transform:uppercase;margin-bottom:2rem}
+.login-box input{width:100%;font-size:0.85rem;padding:10px 14px;border:0.5px solid #3a1a5a;border-radius:4px;background:#1a0d2e;color:#c0a0e0;font-family:'Montserrat',sans-serif;outline:none;text-align:center;letter-spacing:0.2em;margin-bottom:12px}
+.login-box input:focus{border-color:#7a3aaa}
+.login-btn{width:100%;padding:10px;border:none;border-radius:4px;background:#4a1a7a;color:#d0b0e8;font-size:0.8rem;font-weight:500;font-family:'Montserrat',sans-serif;cursor:pointer;letter-spacing:0.15em;transition:background 0.2s}
+.login-btn:hover{background:#5a2a9a}
+.login-err{font-size:0.7rem;color:#c06080;margin-top:10px;display:none}
+
+/* MAIN */
+.main{display:none}
+.top-bar{background:#130a1e;border-bottom:0.5px solid #3a1a5a;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.top-bar-left .title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:300;letter-spacing:0.18em;color:#d0b0e8;text-transform:uppercase}
+.top-bar-left .sub{font-size:0.58rem;color:#6a3a9a;letter-spacing:0.3em;text-transform:uppercase;margin-top:1px}
+.top-bar-right{display:flex;align-items:center;gap:10px}
+.badge-count{background:#1e0d30;border:0.5px solid #4a1a7a;border-radius:20px;font-size:0.63rem;color:#8a5abf;padding:3px 12px}
+.logout-btn{font-size:0.65rem;color:#4a2a6a;cursor:pointer;letter-spacing:0.1em;border:0.5px solid #2a1040;padding:4px 10px;border-radius:4px;background:none;font-family:'Montserrat',sans-serif}
+.logout-btn:hover{color:#c06080;border-color:#6a1a3a}
+
+.toolbar{padding:12px 16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#100818;border-bottom:0.5px solid #2a1040}
+.wa-row{display:flex;align-items:center;gap:6px;background:#1a0d2e;border:0.5px solid #4a1a7a;border-radius:4px;padding:6px 10px;flex:1;min-width:160px}
+.wa-row label{font-size:0.58rem;color:#6a3a9a;white-space:nowrap;letter-spacing:0.15em;text-transform:uppercase}
+.wa-row input{flex:1;background:none;border:none;font-size:0.75rem;color:#c0a0e0;font-family:'Montserrat',sans-serif;outline:none}
+.tb-input{flex:1;min-width:130px;font-size:0.75rem;padding:7px 12px;border:0.5px solid #3a1a5a;border-radius:4px;background:#1a0d2e;color:#c0a0e0;font-family:'Montserrat',sans-serif;outline:none}
+.tb-input:focus{border-color:#7a3aaa}
+.tb-select{font-size:0.75rem;padding:7px 10px;border:0.5px solid #3a1a5a;border-radius:4px;background:#1a0d2e;color:#c0a0e0;font-family:'Montserrat',sans-serif;outline:none}
+.btn-add{font-size:0.72rem;padding:7px 16px;border:0.5px solid #7a3aaa;border-radius:4px;background:#23103a;color:#c090e8;cursor:pointer;white-space:nowrap;letter-spacing:0.1em;font-family:'Montserrat',sans-serif;transition:background 0.2s}
+.btn-add:hover{background:#2e1550}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:12px;padding:16px}
+.card{background:#130a1e;border:0.5px solid #2a1040;border-radius:8px;overflow:hidden;display:flex;flex-direction:column;transition:transform 0.2s,box-shadow 0.2s}
+.card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(100,40,180,0.2)}
+.card-img{width:100%;aspect-ratio:3/4;background:#1e0d30;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden}
+.card-img-ph{font-size:0.62rem;color:#4a2a6a;text-align:center;line-height:1.9;pointer-events:none}
+.card-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.card-body{padding:10px 12px;flex:1;display:flex;flex-direction:column;gap:4px}
+.card-name{font-size:0.78rem;font-weight:500;color:#d0b0e8}
+.card-cat{font-size:0.62rem;color:#6a3a9a;letter-spacing:0.12em;text-transform:uppercase}
+.card-price{font-size:1rem;color:#c090e8;font-family:'Cormorant Garamond',serif;margin-top:2px}
+.card-sizes{font-size:0.62rem;color:#5a3a7a}
+.card-footer{padding:8px 10px;border-top:0.5px solid #2a1040;display:flex;gap:6px}
+.btn-edit{flex:1;padding:7px 0;border-radius:4px;border:0.5px solid #4a1a7a;background:none;color:#9a60c0;cursor:pointer;font-size:0.68rem;font-family:'Montserrat',sans-serif;transition:all 0.2s}
+.btn-edit:hover{background:#23103a;color:#d0b0e8}
+.btn-del{padding:7px 10px;border-radius:4px;border:0.5px solid #2a1040;background:none;color:#4a2a5a;cursor:pointer;font-size:0.7rem;transition:color 0.2s}
+.btn-del:hover{color:#c06080;border-color:#6a1a3a}
+
+.empty{text-align:center;padding:4rem 1rem;color:#3a1a5a;font-size:0.8rem;line-height:2.2}
+.empty-icon{font-size:2rem;margin-bottom:0.5rem;opacity:0.25;display:block}
+
+/* Modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.72);display:flex;align-items:center;justify-content:center;z-index:200;padding:16px}
+.modal{background:#130a1e;border:0.5px solid #4a1a7a;border-radius:10px;width:100%;max-width:360px;padding:22px;max-height:90vh;overflow-y:auto}
+.modal h3{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;color:#d0b0e8;margin-bottom:16px;letter-spacing:0.04em}
+.field{margin-bottom:11px}
+.field label{font-size:0.62rem;color:#6a3a9a;display:block;margin-bottom:4px;letter-spacing:0.15em;text-transform:uppercase}
+.field input,.field select,.field textarea{width:100%;font-size:0.78rem;padding:8px 10px;border:0.5px solid #3a1a5a;border-radius:4px;background:#1a0d2e;color:#c0a0e0;font-family:'Montserrat',sans-serif;outline:none}
+.field input:focus,.field textarea:focus{border-color:#7a3aaa}
+.field textarea{height:64px;resize:vertical}
+.upload-area{border:0.5px dashed #3a1a5a;border-radius:6px;padding:14px;text-align:center;cursor:pointer;background:#1a0d2e;position:relative;transition:border-color 0.2s}
+.upload-area:hover{border-color:#7a3aaa}
+.upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-area p{font-size:0.68rem;color:#4a2a6a;pointer-events:none}
+.img-prev-wrap{margin-bottom:8px}
+.img-prev-wrap img{width:72px;height:92px;object-fit:cover;border-radius:4px;display:block;margin:0 auto}
+.modal-actions{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
+.btn-cancel{padding:8px 16px;border:0.5px solid #3a1a5a;border-radius:4px;background:none;color:#6a3a9a;cursor:pointer;font-size:0.75rem;font-family:'Montserrat',sans-serif}
+.btn-cancel:hover{color:#c090e8;border-color:#6a3a9a}
+.btn-save{padding:8px 18px;border:none;border-radius:4px;background:#4a1a7a;color:#d0b0e8;cursor:pointer;font-size:0.75rem;font-weight:500;font-family:'Montserrat',sans-serif;transition:background 0.2s}
+.btn-save:hover{background:#5a2a9a}
+.hidden{display:none!important}
+
+.tip{font-size:0.65rem;color:#4a2a6a;text-align:center;padding:10px 16px;border-top:0.5px solid #1e0d30;letter-spacing:0.08em}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Medusa</div>
+    <div class="login-sub">Panel de administración</div>
+    <input type="password" id="pwd-input" placeholder="Contraseña" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Entrar</button>
+    <div class="login-err" id="login-err">Contraseña incorrecta</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main" id="main">
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <div class="title">✦ Medusa Boutique</div>
+      <div class="sub">Panel de administración</div>
+    </div>
+    <div class="top-bar-right">
+      <span class="badge-count" id="count-badge">0 productos</span>
+      <button class="logout-btn" onclick="doLogout()">Salir</button>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="wa-row">
+      <label>WhatsApp</label>
+      <input type="text" id="wa-input" placeholder="573XXXXXXXXX" value="" oninput="saveWA()">
+    </div>
+    <input class="tb-input" type="text" id="search" placeholder="Buscar..." oninput="render()">
+    <select class="tb-select" id="filter-cat" onchange="render()">
+      <option value="">Todas</option>
+    </select>
+    <button class="btn-add" onclick="openModal()">+ Agregar producto</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <div class="empty hidden" id="empty">
+    <span class="empty-icon">✦</span>
+    Aún no tienes productos.<br>Toca <strong style="color:#8a5abf">+ Agregar producto</strong> para comenzar.
+  </div>
+  <div class="tip">Los productos se guardan automáticamente y las clientas los verán en <strong>catalogo.html</strong></div>
+</div>
+
+<!-- Modal -->
+<div class="modal-bg hidden" id="modal-bg" onclick="bgClick(event)">
+  <div class="modal">
+    <h3 id="modal-title">Agregar producto</h3>
+    <div class="field">
+      <label>Foto</label>
+      <div class="upload-area">
+        <input type="file" accept="image/*" onchange="previewImg(this)">
+        <div class="img-prev-wrap hidden" id="prev-wrap"><img id="img-prev" src="" alt=""></div>
+        <p id="img-hint">Toca para subir foto</p>
+      </div>
+    </div>
+    <div class="field"><label>Nombre *</label><input type="text" id="f-name" placeholder="Ej: Blusa floral manga larga"></div>
+    <div class="field"><label>Categoría</label><input type="text" id="f-cat" placeholder="Ej: Blusas, Vestidos, Pantalones..."></div>
+    <div class="field"><label>Precio (COP) *</label><input type="number" id="f-price" placeholder="0" min="0"></div>
+    <div class="field"><label>Tallas disponibles</label><input type="text" id="f-sizes" placeholder="Ej: S, M, L, XL"></div>
+    <div class="field"><label>Descripción</label><textarea id="f-desc" placeholder="Tela, colores, detalles..."></textarea></div>
+    <input type="hidden" id="f-img">
+    <input type="hidden" id="edit-id">
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-save" onclick="saveProduct()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var PASS = 'medusa2025';
+var KEY = 'mb_products';
+var WA_KEY = 'mb_wa';
+
+function doLogin(){
+  var v = document.getElementById('pwd-input').value;
+  if(v === PASS){
+    sessionStorage.setItem('mb_auth','1');
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('main').style.display='block';
+    document.getElementById('wa-input').value = localStorage.getItem(WA_KEY)||'573000000000';
+    render();
+  } else {
+    document.getElementById('login-err').style.display='block';
+    document.getElementById('pwd-input').value='';
+  }
+}
+
+function doLogout(){
+  sessionStorage.removeItem('mb_auth');
+  location.reload();
+}
+
+if(sessionStorage.getItem('mb_auth')==='1'){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('main').style.display='block';
+  document.getElementById('wa-input').value = localStorage.getItem(WA_KEY)||'573000000000';
+}
+
+function getProducts(){ try{ return JSON.parse(localStorage.getItem(KEY)||'[]'); }catch(e){ return []; } }
+function setProducts(arr){ localStorage.setItem(KEY, JSON.stringify(arr)); }
+function saveWA(){ localStorage.setItem(WA_KEY, document.getElementById('wa-input').value.trim()); }
+
+function fmt(n){ return '$'+Math.round(n).toLocaleString('es-CO'); }
+
+function updateCats(products){
+  var sel = document.getElementById('filter-cat');
+  var cur = sel.value;
+  var cats = [];
+  products.forEach(function(p){ if(p.cat && cats.indexOf(p.cat)<0) cats.push(p.cat); });
+  sel.innerHTML = '<option value="">Todas</option>' + cats.map(function(c){
+    return '<option value="'+c+'"'+(c===cur?' selected':'')+'>'+c+'</option>';
+  }).join('');
+}
+
+function render(){
+  var products = getProducts();
+  var q = (document.getElementById('search')||{value:''}).value.toLowerCase();
+  var cat = (document.getElementById('filter-cat')||{value:''}).value;
+  var list = products.filter(function(p){
+    return (p.name.toLowerCase().indexOf(q)>=0 || (p.cat||'').toLowerCase().indexOf(q)>=0) && (!cat || p.cat===cat);
+  });
+  document.getElementById('count-badge').textContent = products.length+' producto'+(products.length!==1?'s':'');
+  updateCats(products);
+  var grid = document.getElementById('grid');
+  var empty = document.getElementById('empty');
+  if(!list.length){ grid.innerHTML=''; empty.classList.remove('hidden'); return; }
+  empty.classList.add('hidden');
+  grid.innerHTML = list.map(function(p){
+    return '<div class="card">'
+      +'<div class="card-img" onclick="openModal(\''+p.id+'\')">'
+      +(p.img?'<img src="'+p.img+'" alt="'+p.name+'">':'<div class="card-img-ph">Sin foto<br>Toca para editar</div>')
+      +'</div>'
+      +'<div class="card-body">'
+      +'<div class="card-name">'+p.name+'</div>'
+      +(p.cat?'<div class="card-cat">'+p.cat+'</div>':'')
+      +'<div class="card-price">'+fmt(p.price||0)+'</div>'
+      +(p.sizes?'<div class="card-sizes">Tallas: '+p.sizes+'</div>':'')
+      +'</div>'
+      +'<div class="card-footer">'
+      +'<button class="btn-edit" onclick="openModal(\''+p.id+'\')">✎ Editar</button>'
+      +'<button class="btn-del" onclick="delProd(\''+p.id+'\')">✕</button>'
+      +'</div></div>';
+  }).join('');
+}
+
+function openModal(id){
+  id = id||'';
+  document.getElementById('edit-id').value=id;
+  document.getElementById('modal-title').textContent=id?'Editar producto':'Agregar producto';
+  var p = id ? getProducts().find(function(x){return x.id===id;}) : null;
+  document.getElementById('f-name').value=p?p.name:'';
+  document.getElementById('f-cat').value=p?(p.cat||''):'';
+  document.getElementById('f-price').value=p?(p.price||''):'';
+  document.getElementById('f-sizes').value=p?(p.sizes||''):'';
+  document.getElementById('f-desc').value=p?(p.desc||''):'';
+  document.getElementById('f-img').value=p?(p.img||''):'';
+  var pw=document.getElementById('prev-wrap');
+  var ph=document.getElementById('img-hint');
+  if(p&&p.img){document.getElementById('img-prev').src=p.img;pw.classList.remove('hidden');ph.classList.add('hidden');}
+  else{pw.classList.add('hidden');ph.classList.remove('hidden');}
+  document.getElementById('modal-bg').classList.remove('hidden');
+}
+function closeModal(){ document.getElementById('modal-bg').classList.add('hidden'); }
+function bgClick(e){ if(e.target===document.getElementById('modal-bg')) closeModal(); }
+
+function saveProduct(){
+  var name=document.getElementById('f-name').value.trim();
+  if(!name){alert('El nombre es obligatorio');return;}
+  var id=document.getElementById('edit-id').value||String(Date.now());
+  var p={id:id,name:name,
+    cat:document.getElementById('f-cat').value.trim(),
+    price:parseFloat(document.getElementById('f-price').value)||0,
+    sizes:document.getElementById('f-sizes').value.trim(),
+    desc:document.getElementById('f-desc').value.trim(),
+    img:document.getElementById('f-img').value};
+  var products=getProducts();
+  var idx=products.findIndex(function(x){return x.id===id;});
+  if(idx>=0) products[idx]=p; else products.unshift(p);
+  setProducts(products); closeModal(); render();
+}
+
+function delProd(id){
+  if(!confirm('¿Eliminar este producto?')) return;
+  setProducts(getProducts().filter(function(x){return x.id!==id;}));
+  render();
+}
+
+function previewImg(input){
+  var file=input.files[0]; if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var src=e.target.result;
+    document.getElementById('f-img').value=src;
+    document.getElementById('img-prev').src=src;
+    document.getElementById('prev-wrap').classList.remove('hidden');
+    document.getElementById('img-hint').classList.add('hidden');
+  };
+  reader.readAsDataURL(file);
+}
+
+if(sessionStorage.getItem('mb_auth')==='1') render();
+</script>
+</body>
+</html>
