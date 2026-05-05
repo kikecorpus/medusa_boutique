@@ -7,12 +7,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<!-- firebase-auth no se usa en este panel -->
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#0d0812;font-family:'Montserrat',sans-serif;color:#c0a8d8;min-height:100vh}
-
-/* LOGIN */
 .login-screen{position:fixed;inset:0;background:#0d0812;display:flex;align-items:center;justify-content:center;z-index:999;padding:20px}
 .login-box{background:#130a1e;border:0.5px solid #4a1a7a;border-radius:12px;padding:2.5rem 2rem;width:100%;max-width:320px;text-align:center}
 .login-logo{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;letter-spacing:0.2em;color:#d0b0e8;text-transform:uppercase;margin-bottom:4px}
@@ -22,8 +19,6 @@ body{background:#0d0812;font-family:'Montserrat',sans-serif;color:#c0a8d8;min-he
 .login-btn{width:100%;padding:10px;border:none;border-radius:4px;background:#4a1a7a;color:#d0b0e8;font-size:0.8rem;font-weight:500;font-family:'Montserrat',sans-serif;cursor:pointer;letter-spacing:0.15em;transition:background 0.2s}
 .login-btn:hover{background:#5a2a9a}
 .login-err{font-size:0.7rem;color:#c06080;margin-top:10px;display:none}
-
-/* MAIN */
 .main{display:none}
 .top-bar{background:#130a1e;border-bottom:0.5px solid #3a1a5a;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
 .top-bar-left .title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:300;letter-spacing:0.18em;color:#d0b0e8;text-transform:uppercase}
@@ -32,7 +27,6 @@ body{background:#0d0812;font-family:'Montserrat',sans-serif;color:#c0a8d8;min-he
 .badge-count{background:#1e0d30;border:0.5px solid #4a1a7a;border-radius:20px;font-size:0.63rem;color:#8a5abf;padding:3px 12px}
 .logout-btn{font-size:0.65rem;color:#4a2a6a;cursor:pointer;letter-spacing:0.1em;border:0.5px solid #2a1040;padding:4px 10px;border-radius:4px;background:none;font-family:'Montserrat',sans-serif}
 .logout-btn:hover{color:#c06080;border-color:#6a1a3a}
-
 .toolbar{padding:12px 16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#100818;border-bottom:0.5px solid #2a1040}
 .wa-row{display:flex;align-items:center;gap:6px;background:#1a0d2e;border:0.5px solid #4a1a7a;border-radius:4px;padding:6px 10px;flex:1;min-width:160px}
 .wa-row label{font-size:0.58rem;color:#6a3a9a;white-space:nowrap;letter-spacing:0.15em;text-transform:uppercase}
@@ -42,13 +36,13 @@ body{background:#0d0812;font-family:'Montserrat',sans-serif;color:#c0a8d8;min-he
 .tb-select{font-size:0.75rem;padding:7px 10px;border:0.5px solid #3a1a5a;border-radius:4px;background:#1a0d2e;color:#c0a0e0;font-family:'Montserrat',sans-serif;outline:none}
 .btn-add{font-size:0.72rem;padding:7px 16px;border:0.5px solid #7a3aaa;border-radius:4px;background:#23103a;color:#c090e8;cursor:pointer;white-space:nowrap;letter-spacing:0.1em;font-family:'Montserrat',sans-serif;transition:background 0.2s}
 .btn-add:hover{background:#2e1550}
-
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:12px;padding:16px}
 .card{background:#130a1e;border:0.5px solid #2a1040;border-radius:8px;overflow:hidden;display:flex;flex-direction:column;transition:transform 0.2s,box-shadow 0.2s}
 .card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(100,40,180,0.2)}
 .card-img{width:100%;aspect-ratio:3/4;background:#1e0d30;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden}
 .card-img-ph{font-size:0.62rem;color:#4a2a6a;text-align:center;line-height:1.9;pointer-events:none}
 .card-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.card-img-count{position:absolute;bottom:6px;right:6px;background:rgba(13,8,18,0.75);color:#c0a0e0;font-size:0.55rem;padding:2px 7px;border-radius:10px;letter-spacing:0.08em;pointer-events:none}
 .card-body{padding:10px 12px;flex:1;display:flex;flex-direction:column;gap:4px}
 .card-name{font-size:0.78rem;font-weight:500;color:#d0b0e8}
 .card-cat{font-size:0.62rem;color:#6a3a9a;letter-spacing:0.12em;text-transform:uppercase}
@@ -59,38 +53,36 @@ body{background:#0d0812;font-family:'Montserrat',sans-serif;color:#c0a8d8;min-he
 .btn-edit:hover{background:#23103a;color:#d0b0e8}
 .btn-del{padding:7px 10px;border-radius:4px;border:0.5px solid #2a1040;background:none;color:#4a2a5a;cursor:pointer;font-size:0.7rem;transition:color 0.2s}
 .btn-del:hover{color:#c06080;border-color:#6a1a3a}
-
 .empty{text-align:center;padding:4rem 1rem;color:#3a1a5a;font-size:0.8rem;line-height:2.2}
 .empty-icon{font-size:2rem;margin-bottom:0.5rem;opacity:0.25;display:block}
-
-/* Modal */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.72);display:flex;align-items:center;justify-content:center;z-index:200;padding:16px}
-.modal{background:#130a1e;border:0.5px solid #4a1a7a;border-radius:10px;width:100%;max-width:360px;padding:22px;max-height:90vh;overflow-y:auto}
+.modal{background:#130a1e;border:0.5px solid #4a1a7a;border-radius:10px;width:100%;max-width:380px;padding:22px;max-height:92vh;overflow-y:auto}
 .modal h3{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;color:#d0b0e8;margin-bottom:16px;letter-spacing:0.04em}
 .field{margin-bottom:11px}
 .field label{font-size:0.62rem;color:#6a3a9a;display:block;margin-bottom:4px;letter-spacing:0.15em;text-transform:uppercase}
 .field input,.field select,.field textarea{width:100%;font-size:0.78rem;padding:8px 10px;border:0.5px solid #3a1a5a;border-radius:4px;background:#1a0d2e;color:#c0a0e0;font-family:'Montserrat',sans-serif;outline:none}
 .field input:focus,.field textarea:focus{border-color:#7a3aaa}
 .field textarea{height:64px;resize:vertical}
-.upload-area{border:0.5px dashed #3a1a5a;border-radius:6px;padding:14px;text-align:center;cursor:pointer;background:#1a0d2e;position:relative;transition:border-color 0.2s}
+.imgs-grid{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:8px}
+.img-thumb{position:relative;width:70px;height:90px;border-radius:4px;overflow:hidden;border:0.5px solid #3a1a5a;flex-shrink:0}
+.img-thumb img{width:100%;height:100%;object-fit:cover}
+.img-thumb-del{position:absolute;top:3px;right:3px;background:rgba(0,0,0,0.75);color:#c06080;border:none;border-radius:50%;width:18px;height:18px;font-size:0.6rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.img-thumb-principal{position:absolute;bottom:0;left:0;right:0;background:rgba(74,26,122,0.85);color:#d0b0e8;font-size:0.48rem;text-align:center;padding:2px;letter-spacing:0.08em;pointer-events:none}
+.upload-area{border:0.5px dashed #3a1a5a;border-radius:6px;padding:12px;text-align:center;cursor:pointer;background:#1a0d2e;position:relative;transition:border-color 0.2s}
 .upload-area:hover{border-color:#7a3aaa}
 .upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
 .upload-area p{font-size:0.68rem;color:#4a2a6a;pointer-events:none}
-.img-prev-wrap{margin-bottom:8px}
-.img-prev-wrap img{width:72px;height:92px;object-fit:cover;border-radius:4px;display:block;margin:0 auto}
 .modal-actions{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
 .btn-cancel{padding:8px 16px;border:0.5px solid #3a1a5a;border-radius:4px;background:none;color:#6a3a9a;cursor:pointer;font-size:0.75rem;font-family:'Montserrat',sans-serif}
 .btn-cancel:hover{color:#c090e8;border-color:#6a3a9a}
 .btn-save{padding:8px 18px;border:none;border-radius:4px;background:#4a1a7a;color:#d0b0e8;cursor:pointer;font-size:0.75rem;font-weight:500;font-family:'Montserrat',sans-serif;transition:background 0.2s}
 .btn-save:hover{background:#5a2a9a}
 .hidden{display:none!important}
-
 .tip{font-size:0.65rem;color:#4a2a6a;text-align:center;padding:10px 16px;border-top:0.5px solid #1e0d30;letter-spacing:0.08em}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
 <div class="login-screen" id="login-screen">
   <div class="login-box">
     <div class="login-logo">Medusa</div>
@@ -101,7 +93,6 @@ body{background:#0d0812;font-family:'Montserrat',sans-serif;color:#c0a8d8;min-he
   </div>
 </div>
 
-<!-- MAIN -->
 <div class="main" id="main">
   <div class="top-bar">
     <div class="top-bar-left">
@@ -113,11 +104,10 @@ body{background:#0d0812;font-family:'Montserrat',sans-serif;color:#c0a8d8;min-he
       <button class="logout-btn" onclick="doLogout()">Salir</button>
     </div>
   </div>
-
   <div class="toolbar">
     <div class="wa-row">
       <label>WhatsApp</label>
-      <input type="text" id="wa-input" placeholder="573XXXXXXXXX" value="" oninput="saveWA()">
+      <input type="text" id="wa-input" placeholder="573XXXXXXXXX" oninput="saveWA()">
     </div>
     <input class="tb-input" type="text" id="search" placeholder="Buscar..." oninput="renderFiltered()">
     <select class="tb-select" id="filter-cat" onchange="renderFiltered()">
@@ -125,25 +115,23 @@ body{background:#0d0812;font-family:'Montserrat',sans-serif;color:#c0a8d8;min-he
     </select>
     <button class="btn-add" onclick="openModal()">+ Agregar producto</button>
   </div>
-
   <div class="grid" id="grid"></div>
   <div class="empty hidden" id="empty">
     <span class="empty-icon">✦</span>
     Aún no tienes productos.<br>Toca <strong style="color:#8a5abf">+ Agregar producto</strong> para comenzar.
   </div>
-  <div class="tip">Los productos se guardan automáticamente y las clientas los verán en <strong>catalogo.html</strong></div>
+  <div class="tip">Los productos se guardan automáticamente y las clientas los verán en el catálogo público</div>
 </div>
 
-<!-- Modal -->
 <div class="modal-bg hidden" id="modal-bg" onclick="bgClick(event)">
   <div class="modal">
     <h3 id="modal-title">Agregar producto</h3>
     <div class="field">
-      <label>Foto</label>
-      <div class="upload-area">
-        <input type="file" accept="image/*" onchange="previewImg(this)">
-        <div class="img-prev-wrap hidden" id="prev-wrap"><img id="img-prev" src="" alt=""></div>
-        <p id="img-hint">Toca para subir foto</p>
+      <label>Fotos — la primera es la portada (máx. 5)</label>
+      <div class="imgs-grid" id="imgs-grid"></div>
+      <div class="upload-area" id="upload-area">
+        <input type="file" accept="image/*" multiple onchange="handleImgUpload(this)">
+        <p id="img-hint">✦ Toca para agregar fotos</p>
       </div>
     </div>
     <div class="field"><label>Nombre *</label><input type="text" id="f-name" placeholder="Ej: Blusa floral manga larga"></div>
@@ -151,7 +139,6 @@ body{background:#0d0812;font-family:'Montserrat',sans-serif;color:#c0a8d8;min-he
     <div class="field"><label>Precio (COP) *</label><input type="number" id="f-price" placeholder="0" min="0"></div>
     <div class="field"><label>Tallas disponibles</label><input type="text" id="f-sizes" placeholder="Ej: S, M, L, XL"></div>
     <div class="field"><label>Descripción</label><textarea id="f-desc" placeholder="Tela, colores, detalles..."></textarea></div>
-    <input type="hidden" id="f-img">
     <input type="hidden" id="edit-id">
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
@@ -161,7 +148,6 @@ body{background:#0d0812;font-family:'Montserrat',sans-serif;color:#c0a8d8;min-he
 </div>
 
 <script>
-// Firebase Configuration
 const firebaseConfig = {
   apiKey: "AIzaSyBKA9aW1HpczB0pNB-4PyDqrFKaKI94LxM",
   authDomain: "medussaboutique-85a25.firebaseapp.com",
@@ -170,102 +156,41 @@ const firebaseConfig = {
   messagingSenderId: "184911346758",
   appId: "1:184911346758:web:4d99b06118f16516245e47"
 };
-
-// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// Constants
 var PASS = 'medusa2025';
-var COLLECTION = 'products';
-var WA_DOC = 'config';
+var modalImgs = [];
 
-// Firebase Functions
 async function getProducts(){
   try{
-    const snapshot = await db.collection(COLLECTION).orderBy('createdAt', 'desc').get();
-    var list = [];
-    snapshot.forEach(doc => {
-      list.push({id: doc.id, ...doc.data()});
-    });
-    return list;
-  }catch(e){
-    console.error('Error loading products:', e);
-    return [];
-  }
+    const snap = await db.collection('products').orderBy('createdAt','desc').get();
+    var list=[]; snap.forEach(d=>list.push({id:d.id,...d.data()})); return list;
+  }catch(e){ console.error(e); return []; }
 }
-
-async function setProducts(arr){
+async function saveProduct(p){
   try{
-    // Clear collection
-    const snapshot = await db.collection(COLLECTION).get();
-    const batch = db.batch();
-    snapshot.forEach(doc => {
-      batch.delete(doc.ref);
-    });
-    await batch.commit();
-    
-    // Add new documents
-    for(let i = 0; i < arr.length; i++){
-      let p = arr[i];
-      await db.collection(COLLECTION).doc(p.id).set({
-        ...p,
-        createdAt: p.createdAt || new Date(),
-        updatedAt: new Date()
-      });
-    }
-  }catch(e){
-    console.error('Error saving products:', e);
-    alert('Error al guardar: ' + e.message);
-  }
+    await db.collection('products').doc(p.id).set({...p,createdAt:p.createdAt||new Date(),updatedAt:new Date()});
+  }catch(e){ console.error(e); alert('Error al guardar: '+e.message); }
 }
-
-async function saveProduct(product){
-  try{
-    const id = product.id;
-    await db.collection(COLLECTION).doc(id).set({
-      ...product,
-      createdAt: product.createdAt || new Date(),
-      updatedAt: new Date()
-    });
-  }catch(e){
-    console.error('Error saving product:', e);
-    alert('Error al guardar: ' + e.message);
-  }
-}
-
 async function deleteProduct(id){
-  try{
-    await db.collection(COLLECTION).doc(id).delete();
-  }catch(e){
-    console.error('Error deleting product:', e);
-    alert('Error al eliminar: ' + e.message);
-  }
+  try{ await db.collection('products').doc(id).delete(); }
+  catch(e){ console.error(e); alert('Error al eliminar: '+e.message); }
 }
-
 async function getWA(){
   try{
-    const doc = await db.collection('config').doc('whatsapp').get();
-    if(doc.exists) return doc.data().number || '573000000000';
-    return '573000000000';
-  }catch(e){
-    console.error('Error loading WA:', e);
-    return '573000000000';
-  }
+    const d=await db.collection('config').doc('whatsapp').get();
+    return d.exists?d.data().number||'573000000000':'573000000000';
+  }catch(e){ return '573000000000'; }
 }
-
 async function saveWA(){
-  try{
-    const wa = document.getElementById('wa-input').value.trim();
-    await db.collection('config').doc('whatsapp').set({number: wa});
-  }catch(e){
-    console.error('Error saving WA:', e);
-  }
+  try{ await db.collection('config').doc('whatsapp').set({number:document.getElementById('wa-input').value.trim()}); }
+  catch(e){ console.error(e); }
 }
 
 function doLogin(){
-  var v = document.getElementById('pwd-input').value.trim();
-  if(v === PASS){
+  var v=document.getElementById('pwd-input').value.trim();
+  if(v===PASS){
     sessionStorage.setItem('mb_auth','1');
     document.getElementById('login-screen').style.display='none';
     document.getElementById('main').style.display='block';
@@ -276,22 +201,11 @@ function doLogin(){
     document.getElementById('pwd-input').value='';
   }
 }
-
-function doLogout(){
-  sessionStorage.removeItem('mb_auth');
-  location.reload();
-}
-
+function doLogout(){ sessionStorage.removeItem('mb_auth'); location.reload(); }
 async function initApp(){
-  try{
-    var wa = await getWA();
-    document.getElementById('wa-input').value = wa;
-    await render();
-  }catch(e){
-    console.error('Init error:', e);
-  }
+  try{ document.getElementById('wa-input').value=await getWA(); await render(); }
+  catch(e){ console.error(e); }
 }
-
 if(sessionStorage.getItem('mb_auth')==='1'){
   document.getElementById('login-screen').style.display='none';
   document.getElementById('main').style.display='block';
@@ -299,33 +213,27 @@ if(sessionStorage.getItem('mb_auth')==='1'){
 }
 
 function fmt(n){ return '$'+Math.round(n).toLocaleString('es-CO'); }
-
 function updateCats(products){
-  var sel = document.getElementById('filter-cat');
-  var cur = sel.value;
-  var cats = [];
-  products.forEach(function(p){ if(p.cat && cats.indexOf(p.cat)<0) cats.push(p.cat); });
-  sel.innerHTML = '<option value="">Todas</option>' + cats.map(function(c){
-    return '<option value="'+c+'"'+(c===cur?' selected':'')+'>'+c+'</option>';
-  }).join('');
+  var sel=document.getElementById('filter-cat'),cur=sel.value,cats=[];
+  products.forEach(p=>{ if(p.cat&&!cats.includes(p.cat)) cats.push(p.cat); });
+  sel.innerHTML='<option value="">Todas</option>'+cats.map(c=>'<option value="'+c+'"'+(c===cur?' selected':'')+'>'+c+'</option>').join('');
 }
-
 function displayProducts(products){
-  var q = (document.getElementById('search')||{value:''}).value.toLowerCase();
-  var cat = (document.getElementById('filter-cat')||{value:''}).value;
-  var list = products.filter(function(p){
-    return (p.name.toLowerCase().indexOf(q)>=0 || (p.cat||'').toLowerCase().indexOf(q)>=0) && (!cat || p.cat===cat);
-  });
-  document.getElementById('count-badge').textContent = products.length+' producto'+(products.length!==1?'s':'');
+  var q=(document.getElementById('search')||{value:''}).value.toLowerCase();
+  var cat=(document.getElementById('filter-cat')||{value:''}).value;
+  var list=products.filter(p=>(p.name.toLowerCase().includes(q)||(p.cat||'').toLowerCase().includes(q))&&(!cat||p.cat===cat));
+  document.getElementById('count-badge').textContent=products.length+' producto'+(products.length!==1?'s':'');
   updateCats(products);
-  var grid = document.getElementById('grid');
-  var empty = document.getElementById('empty');
+  var grid=document.getElementById('grid'),empty=document.getElementById('empty');
   if(!list.length){ grid.innerHTML=''; empty.classList.remove('hidden'); return; }
   empty.classList.add('hidden');
-  grid.innerHTML = list.map(function(p){
+  grid.innerHTML=list.map(p=>{
+    var imgs=p.imgs&&p.imgs.length?p.imgs:(p.img?[p.img]:[]);
+    var cover=imgs[0]||'';
     return '<div class="card">'
       +'<div class="card-img" onclick="openModal(\''+p.id+'\')">'
-      +(p.img?'<img src="'+p.img+'" alt="'+p.name+'">':'<div class="card-img-ph">Sin foto<br>Toca para editar</div>')
+      +(cover?'<img src="'+cover+'" alt="'+p.name+'">':'<div class="card-img-ph">Sin foto<br>Toca para editar</div>')
+      +(imgs.length>1?'<span class="card-img-count">'+imgs.length+' fotos</span>':'')
       +'</div>'
       +'<div class="card-body">'
       +'<div class="card-name">'+p.name+'</div>'
@@ -339,87 +247,87 @@ function displayProducts(products){
       +'</div></div>';
   }).join('');
 }
-
-function renderFiltered(){
-  if(window.currentProducts){
-    displayProducts(window.currentProducts);
-  }
-}
-
+function renderFiltered(){ if(window.currentProducts) displayProducts(window.currentProducts); }
 async function render(){
-  var products = await getProducts();
-  window.currentProducts = products; // Store for modal access
+  var products=await getProducts();
+  window.currentProducts=products;
   displayProducts(products);
 }
 
-function openModal(id){
-  id = id||'';
-  document.getElementById('edit-id').value=id;
-  document.getElementById('modal-title').textContent=id?'Editar producto':'Agregar producto';
-  // We'll need to load the product from the array when render is called
-  var products = window.currentProducts || [];
-  var p = id ? products.find(function(x){return x.id===id;}) : null;
-  document.getElementById('f-name').value=p?p.name:'';
-  document.getElementById('f-cat').value=p?(p.cat||''):'';
-  document.getElementById('f-price').value=p?(p.price||''):'';
-  document.getElementById('f-sizes').value=p?(p.sizes||''):'';
-  document.getElementById('f-desc').value=p?(p.desc||''):'';
-  document.getElementById('f-img').value=p?(p.img||''):'';
-  var pw=document.getElementById('prev-wrap');
-  var ph=document.getElementById('img-hint');
-  if(p&&p.img){document.getElementById('img-prev').src=p.img;pw.classList.remove('hidden');ph.classList.add('hidden');}
-  else{pw.classList.add('hidden');ph.classList.remove('hidden');}
-  document.getElementById('modal-bg').classList.remove('hidden');
+function renderModalImgs(){
+  var grid=document.getElementById('imgs-grid');
+  grid.innerHTML=modalImgs.map((src,i)=>
+    '<div class="img-thumb">'
+    +'<img src="'+src+'">'
+    +'<button class="img-thumb-del" onclick="removeImg('+i+')">✕</button>'
+    +(i===0?'<div class="img-thumb-principal">Portada</div>':'')
+    +'</div>'
+  ).join('');
+  document.getElementById('img-hint').textContent=modalImgs.length?'+ Agregar más fotos':'✦ Toca para agregar fotos';
+  document.getElementById('upload-area').style.display=modalImgs.length>=5?'none':'block';
+}
+function removeImg(i){ modalImgs.splice(i,1); renderModalImgs(); }
+
+function compressImage(file,cb){
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var img=new Image();
+    img.onload=function(){
+      var MAX=700,w=img.width,h=img.height;
+      if(w>h){if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}}else{if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}}
+      var c=document.createElement('canvas'); c.width=w; c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);
+      cb(c.toDataURL('image/jpeg',0.72));
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function handleImgUpload(input){
+  var files=Array.from(input.files).slice(0,5-modalImgs.length);
+  var loaded=0;
+  if(!files.length) return;
+  files.forEach(f=>compressImage(f,src=>{ modalImgs.push(src); loaded++; if(loaded===files.length) renderModalImgs(); }));
+  input.value='';
 }
 
+function openModal(id){
+  id=id||'';
+  document.getElementById('edit-id').value=id;
+  document.getElementById('modal-title').textContent=id?'Editar producto':'Agregar producto';
+  var p=id?(window.currentProducts||[]).find(x=>x.id===id):null;
+  document.getElementById('f-name').value=p?p.name:'';
+  document.getElementById('f-cat').value=p?p.cat||'':'';
+  document.getElementById('f-price').value=p?p.price||'':'';
+  document.getElementById('f-sizes').value=p?p.sizes||'':'';
+  document.getElementById('f-desc').value=p?p.desc||'':'';
+  modalImgs=p?(p.imgs&&p.imgs.length?[...p.imgs]:(p.img?[p.img]:[])):[]; 
+  renderModalImgs();
+  document.getElementById('modal-bg').classList.remove('hidden');
+}
 function closeModal(){ document.getElementById('modal-bg').classList.add('hidden'); }
 function bgClick(e){ if(e.target===document.getElementById('modal-bg')) closeModal(); }
 
 async function saveProductForm(){
   var name=document.getElementById('f-name').value.trim();
-  if(!name){alert('El nombre es obligatorio');return;}
+  if(!name){ alert('El nombre es obligatorio'); return; }
   var id=document.getElementById('edit-id').value||String(Date.now());
-  var p={id:id,name:name,
+  await saveProduct({
+    id,name,
     cat:document.getElementById('f-cat').value.trim(),
     price:parseFloat(document.getElementById('f-price').value)||0,
     sizes:document.getElementById('f-sizes').value.trim(),
     desc:document.getElementById('f-desc').value.trim(),
-    img:document.getElementById('f-img').value};
-  
-  await saveProduct(p);
+    imgs:modalImgs,
+    img:modalImgs[0]||''
+  });
   closeModal();
   await render();
 }
-
 async function delProd(id){
   if(!confirm('¿Eliminar este producto?')) return;
   await deleteProduct(id);
   await render();
-}
-
-function previewImg(input){
-  var file=input.files[0]; if(!file)return;
-  var reader=new FileReader();
-  reader.onload=function(e){
-    var img=new Image();
-    img.onload=function(){
-      // Redimensionar a máx 600px y comprimir al 70%
-      var MAX=600;
-      var w=img.width, h=img.height;
-      if(w>h){ if(w>MAX){h=Math.round(h*MAX/w);w=MAX;} }
-      else { if(h>MAX){w=Math.round(w*MAX/h);h=MAX;} }
-      var canvas=document.createElement('canvas');
-      canvas.width=w; canvas.height=h;
-      canvas.getContext('2d').drawImage(img,0,0,w,h);
-      var src=canvas.toDataURL('image/jpeg',0.70);
-      document.getElementById('f-img').value=src;
-      document.getElementById('img-prev').src=src;
-      document.getElementById('prev-wrap').classList.remove('hidden');
-      document.getElementById('img-hint').classList.add('hidden');
-    };
-    img.src=e.target.result;
-  };
-  reader.readAsDataURL(file);
 }
 </script>
 </body>

@@ -2,6 +2,8 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medusa Boutique — Catálogo</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -16,26 +18,64 @@ body{background:#0d0812;font-family:'Montserrat',sans-serif;color:#c0a8d8;min-he
 .tb-input{flex:1;min-width:120px;font-size:0.73rem;padding:7px 10px;border:0.5px solid #3a1a5a;border-radius:4px;background:#1a0d2e;color:#c0a0e0;font-family:'Montserrat',sans-serif;outline:none}
 .tb-select{font-size:0.73rem;padding:7px 8px;border:0.5px solid #3a1a5a;border-radius:4px;background:#1a0d2e;color:#c0a0e0;font-family:'Montserrat',sans-serif;outline:none}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;padding:14px}
-.card{background:#130a1e;border:0.5px solid #2a1040;border-radius:8px;overflow:hidden;display:flex;flex-direction:column;transition:transform 0.2s,box-shadow 0.2s}
+.card{background:#130a1e;border:0.5px solid #2a1040;border-radius:8px;overflow:hidden;display:flex;flex-direction:column;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer}
 .card:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(100,40,180,0.22)}
-.card-img{width:100%;aspect-ratio:3/4;position:relative;overflow:hidden;cursor:pointer;background:#1e0d30;display:flex;align-items:center;justify-content:center}
+.card-img{width:100%;aspect-ratio:3/4;position:relative;overflow:hidden;background:#1e0d30;display:flex;align-items:center;justify-content:center}
 .card-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;transition:transform 0.35s}
 .card:hover .card-img img{transform:scale(1.05)}
 .card-img-ph{font-size:2rem;color:#2a1040;pointer-events:none}
+.card-img-count{position:absolute;bottom:6px;right:6px;background:rgba(13,8,18,0.75);color:#c0a0e0;font-size:0.55rem;padding:2px 7px;border-radius:10px;letter-spacing:0.08em;pointer-events:none}
 .card-body{padding:9px 11px;flex:1;display:flex;flex-direction:column;gap:3px}
 .card-name{font-size:0.76rem;font-weight:500;color:#d0b0e8;line-height:1.3}
 .card-cat{font-size:0.58rem;color:#6a3a9a;letter-spacing:0.15em;text-transform:uppercase}
 .card-price{font-size:1.05rem;color:#c090e8;font-family:'Cormorant Garamond',serif;margin-top:2px}
 .card-sizes{font-size:0.6rem;color:#5a3a7a}
+.card-desc{font-size:0.63rem;color:#6a4a8a;line-height:1.5;margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .card-footer{padding:8px 10px;border-top:0.5px solid #1e0d30}
 .btn-wa{width:100%;padding:8px 0;border-radius:4px;border:none;cursor:pointer;font-size:0.65rem;font-weight:500;background:#1a472a;color:#6fcf97;font-family:'Montserrat',sans-serif;letter-spacing:0.08em;display:flex;align-items:center;justify-content:center;gap:6px;transition:background 0.2s}
 .btn-wa:hover{background:#1f5c34}
 .btn-wa svg{width:13px;height:13px;fill:#6fcf97;flex-shrink:0}
 .empty{text-align:center;padding:3rem 1rem;color:#3a1a5a;font-size:0.78rem;line-height:2.2}
-.lb{position:fixed;inset:0;background:rgba(0,0,0,0.88);display:flex;align-items:center;justify-content:center;z-index:200;padding:16px;cursor:pointer}
-.lb img{max-width:88vw;max-height:86vh;object-fit:contain;border-radius:6px;border:0.5px solid #3a1a5a}
-.lb-close{position:absolute;top:14px;right:18px;color:#6a3a9a;font-size:1.3rem;cursor:pointer}
 .hidden{display:none!important}
+
+/* ── Detalle modal ── */
+.detail-bg{position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:200;display:flex;align-items:center;justify-content:center;padding:0}
+.detail-modal{background:#0d0812;width:100%;max-width:480px;height:100%;max-height:100dvh;display:flex;flex-direction:column;position:relative;overflow:hidden}
+@media(min-width:500px){
+  .detail-modal{height:auto;max-height:92vh;border-radius:10px;border:0.5px solid #3a1a5a}
+}
+.detail-close{position:absolute;top:12px;right:14px;background:rgba(13,8,18,0.8);border:none;color:#6a3a9a;font-size:1.1rem;cursor:pointer;z-index:10;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.detail-close:hover{color:#d0b0e8}
+
+/* Galería */
+.gallery{position:relative;width:100%;aspect-ratio:4/5;background:#130a1e;flex-shrink:0;overflow:hidden}
+.gallery-main{width:100%;height:100%;object-fit:cover;display:block}
+.gallery-main-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3rem;color:#2a1040}
+.gallery-arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(13,8,18,0.65);border:0.5px solid #3a1a5a;color:#c0a0e0;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;z-index:5;transition:background 0.2s}
+.gallery-arrow:hover{background:rgba(74,26,122,0.7)}
+.gallery-arrow-l{left:10px}
+.gallery-arrow-r{right:10px}
+.gallery-dots{position:absolute;bottom:10px;left:0;right:0;display:flex;justify-content:center;gap:5px}
+.gallery-dot{width:6px;height:6px;border-radius:50%;background:#3a1a5a;cursor:pointer;transition:background 0.2s}
+.gallery-dot.active{background:#9a60c0}
+.gallery-thumbs{display:flex;gap:6px;padding:10px 14px 4px;overflow-x:auto;flex-shrink:0;scrollbar-width:none}
+.gallery-thumbs::-webkit-scrollbar{display:none}
+.gallery-thumb{width:52px;height:66px;border-radius:4px;overflow:hidden;flex-shrink:0;cursor:pointer;border:1.5px solid transparent;transition:border-color 0.2s}
+.gallery-thumb.active{border-color:#7a3aaa}
+.gallery-thumb img{width:100%;height:100%;object-fit:cover}
+
+/* Info */
+.detail-info{padding:14px 16px 6px;flex:1;overflow-y:auto}
+.detail-cat{font-size:0.58rem;color:#6a3a9a;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:4px}
+.detail-name{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-weight:300;color:#d0b0e8;line-height:1.2;margin-bottom:6px}
+.detail-price{font-family:'Cormorant Garamond',serif;font-size:1.7rem;color:#c090e8;margin-bottom:8px}
+.detail-sizes{font-size:0.68rem;color:#8a5abf;margin-bottom:10px}
+.detail-sizes span{display:inline-block;border:0.5px solid #3a1a5a;border-radius:3px;padding:3px 8px;margin:2px 3px 2px 0;background:#1a0d2e}
+.detail-desc{font-size:0.75rem;color:#8a6aaa;line-height:1.7;margin-bottom:12px}
+.detail-footer{padding:10px 14px 14px;flex-shrink:0}
+.btn-wa-lg{width:100%;padding:12px;border-radius:6px;border:none;cursor:pointer;font-size:0.75rem;font-weight:500;background:#1a472a;color:#6fcf97;font-family:'Montserrat',sans-serif;letter-spacing:0.1em;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 0.2s}
+.btn-wa-lg:hover{background:#1f5c34}
+.btn-wa-lg svg{width:16px;height:16px;fill:#6fcf97;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -49,8 +89,8 @@ body{background:#0d0812;font-family:'Montserrat',sans-serif;color:#c0a8d8;min-he
 </div>
 
 <div class="toolbar">
-  <input class="tb-input" type="text" id="search" placeholder="Buscar prenda..." oninput="render()">
-  <select class="tb-select" id="fcat" onchange="render()">
+  <input class="tb-input" type="text" id="search" placeholder="Buscar prenda..." oninput="renderGrid()">
+  <select class="tb-select" id="fcat" onchange="renderGrid()">
     <option value="">Todas</option>
   </select>
 </div>
@@ -58,13 +98,39 @@ body{background:#0d0812;font-family:'Montserrat',sans-serif;color:#c0a8d8;min-he
 <div class="grid" id="grid"></div>
 <div class="empty hidden" id="empty">No hay prendas disponibles aún.<br>¡Pronto tendremos novedades!</div>
 
-<div class="lb hidden" id="lb" onclick="closeLb()">
-  <span class="lb-close">✕</span>
-  <img id="lb-img" src="" alt="">
+<!-- Modal detalle -->
+<div class="detail-bg hidden" id="detail-bg" onclick="bgClose(event)">
+  <div class="detail-modal" id="detail-modal">
+    <button class="detail-close" onclick="closeDetail()">✕</button>
+
+    <div class="gallery" id="d-gallery">
+      <img class="gallery-main" id="d-main-img" src="" alt="">
+      <div class="gallery-main-ph hidden" id="d-main-ph">✦</div>
+      <button class="gallery-arrow gallery-arrow-l hidden" id="d-arrow-l" onclick="galleryStep(-1)">‹</button>
+      <button class="gallery-arrow gallery-arrow-r hidden" id="d-arrow-r" onclick="galleryStep(1)">›</button>
+      <div class="gallery-dots" id="d-dots"></div>
+    </div>
+
+    <div class="gallery-thumbs" id="d-thumbs"></div>
+
+    <div class="detail-info">
+      <div class="detail-cat" id="d-cat"></div>
+      <div class="detail-name" id="d-name"></div>
+      <div class="detail-price" id="d-price"></div>
+      <div class="detail-sizes" id="d-sizes"></div>
+      <div class="detail-desc" id="d-desc"></div>
+    </div>
+
+    <div class="detail-footer">
+      <a class="btn-wa-lg" id="d-wa-btn" href="#" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        Pedir por WhatsApp
+      </a>
+    </div>
+  </div>
 </div>
 
 <script>
-// Firebase Configuration
 const firebaseConfig = {
   apiKey: "AIzaSyBKA9aW1HpczB0pNB-4PyDqrFKaKI94LxM",
   authDomain: "medussaboutique-85a25.firebaseapp.com",
@@ -73,104 +139,65 @@ const firebaseConfig = {
   messagingSenderId: "184911346758",
   appId: "1:184911346758:web:4d99b06118f16516245e47"
 };
-
-// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-var WA = '573000000000';
+var allProducts = [];
+var waNumber = '573000000000';
+var currentImgs = [];
+var currentIdx = 0;
 
-var DEMO = [
-  {id:'1',name:'Blusa floral manga larga',cat:'Blusas',price:65000,sizes:'S, M, L',img:'https://images.unsplash.com/photo-1594938298603-c8148c4b4f49?w=400&q=80',desc:'Tela liviana, perfecta para el día a día'},
-  {id:'2',name:'Vestido lila elegante',cat:'Vestidos',price:120000,sizes:'S, M, L, XL',img:'https://images.unsplash.com/photo-1539008835657-9e8e9680c956?w=400&q=80',desc:'Ideal para ocasiones especiales'},
-  {id:'3',name:'Conjunto deportivo',cat:'Deportivo',price:89000,sizes:'XS, S, M',img:'https://images.unsplash.com/photo-1571945153237-4929e783af4a?w=400&q=80',desc:'Tela transpirable y cómoda'},
-  {id:'4',name:'Blusa satinada off-shoulder',cat:'Blusas',price:72000,sizes:'S, M',img:'https://images.unsplash.com/photo-1524253482453-3fed8d2fe12b?w=400&q=80',desc:''},
-  {id:'5',name:'Pantalón palazzo negro',cat:'Pantalones',price:98000,sizes:'S, M, L, XL',img:'https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=400&q=80',desc:'Corte amplio y elegante'},
-  {id:'6',name:'Vestido midi estampado',cat:'Vestidos',price:110000,sizes:'M, L',img:'https://images.unsplash.com/photo-1551163943-3f6a855d1153?w=400&q=80',desc:'Estampado exclusivo de temporada'},
-];
+async function init(){
+  try{
+    var [snap, waDoc] = await Promise.all([
+      db.collection('products').orderBy('createdAt','desc').get(),
+      db.collection('config').doc('whatsapp').get()
+    ]);
+    allProducts=[];
+    snap.forEach(d=>allProducts.push({id:d.id,...d.data()}));
+    if(waDoc.exists) waNumber=waDoc.data().number||waNumber;
+  }catch(e){ console.error(e); }
+  renderGrid();
+}
 
-function getProducts(){
-  try{
-    const snapshot = db.collection('products').orderBy('createdAt', 'desc').get();
-    var list = [];
-    snapshot.then(querySnapshot => {
-      querySnapshot.forEach(doc => {
-        list.push({id: doc.id, ...doc.data()});
-      });
-    });
-    return list;
-  }catch(e){
-    console.error('Error loading products:', e);
-    return DEMO;
-  }
-}
-async function getProductsAsync(){
-  try{
-    const snapshot = await db.collection('products').orderBy('createdAt', 'desc').get();
-    var list = [];
-    snapshot.forEach(doc => {
-      list.push({id: doc.id, ...doc.data()});
-    });
-    return list.length ? list : DEMO;
-  }catch(e){
-    console.error('Error loading products:', e);
-    return DEMO;
-  }
-}
-async function getWA(){
-  try{
-    const doc = await db.collection('config').doc('whatsapp').get();
-    if(doc.exists) return doc.data().number || WA;
-    return WA;
-  }catch(e){
-    console.error('Error loading WA:', e);
-    return WA;
-  }
-}
 function fmt(n){ return '$'+Math.round(n).toLocaleString('es-CO'); }
 
-function updateCats(list){
-  var sel=document.getElementById('fcat');
-  var cur=sel.value;
-  var cats=[];
-  list.forEach(function(p){if(p.cat&&cats.indexOf(p.cat)<0)cats.push(p.cat);});
-  sel.innerHTML='<option value="">Todas</option>'+cats.map(function(c){
-    return '<option value="'+c+'"'+(c===cur?' selected':'')+'>'+c+'</option>';
-  }).join('');
+function updateCats(){
+  var sel=document.getElementById('fcat'),cur=sel.value,cats=[];
+  allProducts.forEach(p=>{ if(p.cat&&!cats.includes(p.cat)) cats.push(p.cat); });
+  sel.innerHTML='<option value="">Todas</option>'+cats.map(c=>'<option value="'+c+'"'+(c===cur?' selected':'')+'>'+c+'</option>').join('');
 }
 
-async function render(){
-  var all=await getProductsAsync();
+function renderGrid(){
   var q=document.getElementById('search').value.toLowerCase();
   var cat=document.getElementById('fcat').value;
-  var list=all.filter(function(p){
-    return (!q||(p.name.toLowerCase().indexOf(q)>=0)||(p.cat||'').toLowerCase().indexOf(q)>=0)&&(!cat||p.cat===cat);
-  });
-  document.getElementById('badge').textContent=all.length+' prenda'+(all.length!==1?'s':'');
-  updateCats(all);
-  var grid=document.getElementById('grid');
-  var empty=document.getElementById('empty');
-  if(!list.length){grid.innerHTML='';empty.classList.remove('hidden');return;}
+  var list=allProducts.filter(p=>(!q||p.name.toLowerCase().includes(q)||(p.cat||'').toLowerCase().includes(q))&&(!cat||p.cat===cat));
+  document.getElementById('badge').textContent=allProducts.length+' prenda'+(allProducts.length!==1?'s':'');
+  updateCats();
+  var grid=document.getElementById('grid'),empty=document.getElementById('empty');
+  if(!list.length){ grid.innerHTML=''; empty.classList.remove('hidden'); return; }
   empty.classList.add('hidden');
-  var wa=(await getWA()).replace(/\D/g,'');
-  grid.innerHTML=list.map(function(p,i){
+  var wa=waNumber.replace(/\D/g,'');
+  grid.innerHTML=list.map(p=>{
+    var imgs=p.imgs&&p.imgs.length?p.imgs:(p.img?[p.img]:[]);
+    var cover=imgs[0]||'';
     var msg='Hola Medusa Boutique! 💜 Me interesa:\n\n*'+p.name+'*'
-      +(p.cat?' — '+p.cat:'')
-      +(p.price?'\nPrecio: '+fmt(p.price):'')
-      +(p.sizes?'\nTallas: '+p.sizes:'')
-      +'\n\n¿Está disponible?';
+      +(p.cat?' — '+p.cat:'')+(p.price?'\nPrecio: '+fmt(p.price):'')
+      +(p.sizes?'\nTallas: '+p.sizes:'')+'\n\n¿Está disponible?';
     var waUrl='https://wa.me/'+wa+'?text='+encodeURIComponent(msg);
-    return '<div class="card">'
-      +'<div class="card-img" onclick="openLb(\''+encodeURIComponent(p.img||'')+'\')">'
-      +(p.img?'<img src="'+p.img+'" alt="'+p.name+'" loading="lazy">':'<div class="card-img-ph">✦</div>')
+    return '<div class="card" onclick="openDetail(\''+p.id+'\')">'
+      +'<div class="card-img">'
+      +(cover?'<img src="'+cover+'" alt="'+p.name+'" loading="lazy">':'<div class="card-img-ph">✦</div>')
+      +(imgs.length>1?'<span class="card-img-count">'+imgs.length+' fotos</span>':'')
       +'</div>'
       +'<div class="card-body">'
       +'<div class="card-name">'+p.name+'</div>'
       +(p.cat?'<div class="card-cat">'+p.cat+'</div>':'')
       +'<div class="card-price">'+fmt(p.price||0)+'</div>'
       +(p.sizes?'<div class="card-sizes">Tallas: '+p.sizes+'</div>':'')
+      +(p.desc?'<div class="card-desc">'+p.desc+'</div>':'')
       +'</div>'
-      +'<div class="card-footer">'
+      +'<div class="card-footer" onclick="event.stopPropagation()">'
       +'<a class="btn-wa" href="'+waUrl+'" target="_blank">'
       +'<svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>'
       +'Pedir por WhatsApp</a>'
@@ -178,21 +205,84 @@ async function render(){
   }).join('');
 }
 
-function openLb(encoded){
-  var src=decodeURIComponent(encoded);
-  if(!src)return;
-  document.getElementById('lb-img').src=src;
-  document.getElementById('lb').classList.remove('hidden');
-}
-function closeLb(){
-  document.getElementById('lb').classList.add('hidden');
-  document.getElementById('lb-img').src='';
-}
-document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLb();});
+// ── Detalle ───────────────────────────────────────────
+function openDetail(id){
+  var p=allProducts.find(x=>x.id===id); if(!p) return;
+  currentImgs=p.imgs&&p.imgs.length?p.imgs:(p.img?[p.img]:[]);
+  currentIdx=0;
 
-// Initial load
-render();
+  document.getElementById('d-cat').textContent=p.cat||'';
+  document.getElementById('d-name').textContent=p.name;
+  document.getElementById('d-price').textContent=fmt(p.price||0);
+  document.getElementById('d-desc').textContent=p.desc||'';
 
+  // Tallas como chips
+  var sizesEl=document.getElementById('d-sizes');
+  if(p.sizes){ sizesEl.innerHTML='<b style="font-size:0.6rem;color:#6a3a9a;letter-spacing:0.15em;text-transform:uppercase;display:block;margin-bottom:4px">Tallas</b>'+p.sizes.split(',').map(s=>'<span>'+s.trim()+'</span>').join(''); }
+  else { sizesEl.innerHTML=''; }
+
+  // WhatsApp
+  var wa=waNumber.replace(/\D/g,'');
+  var msg='Hola Medusa Boutique! 💜 Me interesa:\n\n*'+p.name+'*'
+    +(p.cat?' — '+p.cat:'')+(p.price?'\nPrecio: '+fmt(p.price):'')
+    +(p.sizes?'\nTallas: '+p.sizes:'')+'\n\n¿Está disponible?';
+  document.getElementById('d-wa-btn').href='https://wa.me/'+wa+'?text='+encodeURIComponent(msg);
+
+  renderGallery();
+  document.getElementById('detail-bg').classList.remove('hidden');
+  document.body.style.overflow='hidden';
+}
+
+function renderGallery(){
+  var main=document.getElementById('d-main-img');
+  var ph=document.getElementById('d-main-ph');
+  var arL=document.getElementById('d-arrow-l');
+  var arR=document.getElementById('d-arrow-r');
+  var dots=document.getElementById('d-dots');
+  var thumbs=document.getElementById('d-thumbs');
+
+  if(currentImgs.length){
+    main.src=currentImgs[currentIdx];
+    main.classList.remove('hidden');
+    ph.classList.add('hidden');
+  } else {
+    main.classList.add('hidden');
+    ph.classList.remove('hidden');
+  }
+
+  var multi=currentImgs.length>1;
+  arL.classList.toggle('hidden',!multi);
+  arR.classList.toggle('hidden',!multi);
+
+  dots.innerHTML=multi?currentImgs.map((_,i)=>'<div class="gallery-dot'+(i===currentIdx?' active':'')+'" onclick="galleryGo('+i+')"></div>').join(''):'';
+  thumbs.innerHTML=multi?currentImgs.map((src,i)=>'<div class="gallery-thumb'+(i===currentIdx?' active':'')+'" onclick="galleryGo('+i+')"><img src="'+src+'"></div>').join(''):'';
+}
+
+function galleryStep(dir){
+  currentIdx=(currentIdx+dir+currentImgs.length)%currentImgs.length;
+  renderGallery();
+}
+function galleryGo(i){ currentIdx=i; renderGallery(); }
+
+function closeDetail(){
+  document.getElementById('detail-bg').classList.add('hidden');
+  document.body.style.overflow='';
+}
+function bgClose(e){ if(e.target===document.getElementById('detail-bg')) closeDetail(); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeDetail(); });
+
+// Touch swipe en galería
+(function(){
+  var startX=0;
+  var el=document.getElementById('d-gallery');
+  el.addEventListener('touchstart',e=>{ startX=e.touches[0].clientX; },{passive:true});
+  el.addEventListener('touchend',e=>{
+    var dx=e.changedTouches[0].clientX-startX;
+    if(Math.abs(dx)>40&&currentImgs.length>1) galleryStep(dx<0?1:-1);
+  },{passive:true});
+})();
+
+init();
 </script>
 </body>
 </html>
