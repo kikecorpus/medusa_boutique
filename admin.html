@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin — Medusa Boutique</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js"></script>
+<style src="https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#0d0812;font-family:'Montserrat',sans-serif;color:#c0a8d8;min-height:100vh}
@@ -116,8 +119,8 @@ body{background:#0d0812;font-family:'Montserrat',sans-serif;color:#c0a8d8;min-he
       <label>WhatsApp</label>
       <input type="text" id="wa-input" placeholder="573XXXXXXXXX" value="" oninput="saveWA()">
     </div>
-    <input class="tb-input" type="text" id="search" placeholder="Buscar..." oninput="render()">
-    <select class="tb-select" id="filter-cat" onchange="render()">
+    <input class="tb-input" type="text" id="search" placeholder="Buscar..." oninput="renderFiltered()">
+    <select class="tb-select" id="filter-cat" onchange="renderFiltered()">
       <option value="">Todas</option>
     </select>
     <button class="btn-add" onclick="openModal()">+ Agregar producto</button>
@@ -152,15 +155,113 @@ body{background:#0d0812;font-family:'Montserrat',sans-serif;color:#c0a8d8;min-he
     <input type="hidden" id="edit-id">
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
-      <button class="btn-save" onclick="saveProduct()">Guardar</button>
+      <button class="btn-save" onclick="saveProductForm()">Guardar</button>
     </div>
   </div>
 </div>
 
 <script>
+// Firebase Configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBKA9aW1HpczB0pNB-4PyDqrFKaKI94LxM",
+  authDomain: "medussaboutique-85a25.firebaseapp.com",
+  projectId: "medussaboutique-85a25",
+  storageBucket: "medussaboutique-85a25.firebasestorage.app",
+  messagingSenderId: "184911346758",
+  appId: "1:184911346758:web:4d99b06118f16516245e47"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// Constants
 var PASS = 'medusa2025';
-var KEY = 'mb_products';
-var WA_KEY = 'mb_wa';
+var COLLECTION = 'products';
+var WA_DOC = 'config';
+
+// Firebase Functions
+async function getProducts(){
+  try{
+    const snapshot = await db.collection(COLLECTION).orderBy('createdAt', 'desc').get();
+    var list = [];
+    snapshot.forEach(doc => {
+      list.push({id: doc.id, ...doc.data()});
+    });
+    return list;
+  }catch(e){
+    console.error('Error loading products:', e);
+    return [];
+  }
+}
+
+async function setProducts(arr){
+  try{
+    // Clear collection
+    const snapshot = await db.collection(COLLECTION).get();
+    const batch = db.batch();
+    snapshot.forEach(doc => {
+      batch.delete(doc.ref);
+    });
+    await batch.commit();
+    
+    // Add new documents
+    for(let i = 0; i < arr.length; i++){
+      let p = arr[i];
+      await db.collection(COLLECTION).doc(p.id).set({
+        ...p,
+        createdAt: p.createdAt || new Date(),
+        updatedAt: new Date()
+      });
+    }
+  }catch(e){
+    console.error('Error saving products:', e);
+    alert('Error al guardar: ' + e.message);
+  }
+}
+
+async function saveProduct(product){
+  try{
+    const id = product.id;
+    await db.collection(COLLECTION).doc(id).set({
+      ...product,
+      createdAt: product.createdAt || new Date(),
+      updatedAt: new Date()
+    });
+  }catch(e){
+    console.error('Error saving product:', e);
+    alert('Error al guardar: ' + e.message);
+  }
+}
+
+async function deleteProduct(id){
+  try{
+    await db.collection(COLLECTION).doc(id).delete();
+  }catch(e){
+    console.error('Error deleting product:', e);
+    alert('Error al eliminar: ' + e.message);
+  }
+}
+
+async function getWA(){
+  try{
+    const doc = await db.collection('config').doc('whatsapp').get();
+    if(doc.exists) return doc.data().number || '573000000000';
+    return '573000000000';
+  }catch(e){
+    console.error('Error loading WA:', e);
+    return '573000000000';
+  }
+}
+
+async function saveWA(){
+  try{
+    const wa = document.getElementById('wa-input').value.trim();
+    await db.collection('config').doc('whatsapp').set({number: wa});
+  }catch(e){
+    console.error('Error saving WA:', e);
+  }
+}
 
 function doLogin(){
   var v = document.getElementById('pwd-input').value;
@@ -168,8 +269,7 @@ function doLogin(){
     sessionStorage.setItem('mb_auth','1');
     document.getElementById('login-screen').style.display='none';
     document.getElementById('main').style.display='block';
-    document.getElementById('wa-input').value = localStorage.getItem(WA_KEY)||'573000000000';
-    render();
+    initApp();
   } else {
     document.getElementById('login-err').style.display='block';
     document.getElementById('pwd-input').value='';
@@ -181,15 +281,21 @@ function doLogout(){
   location.reload();
 }
 
+async function initApp(){
+  try{
+    var wa = await getWA();
+    document.getElementById('wa-input').value = wa;
+    await render();
+  }catch(e){
+    console.error('Init error:', e);
+  }
+}
+
 if(sessionStorage.getItem('mb_auth')==='1'){
   document.getElementById('login-screen').style.display='none';
   document.getElementById('main').style.display='block';
-  document.getElementById('wa-input').value = localStorage.getItem(WA_KEY)||'573000000000';
+  initApp();
 }
-
-function getProducts(){ try{ return JSON.parse(localStorage.getItem(KEY)||'[]'); }catch(e){ return []; } }
-function setProducts(arr){ localStorage.setItem(KEY, JSON.stringify(arr)); }
-function saveWA(){ localStorage.setItem(WA_KEY, document.getElementById('wa-input').value.trim()); }
 
 function fmt(n){ return '$'+Math.round(n).toLocaleString('es-CO'); }
 
@@ -203,8 +309,7 @@ function updateCats(products){
   }).join('');
 }
 
-function render(){
-  var products = getProducts();
+function displayProducts(products){
   var q = (document.getElementById('search')||{value:''}).value.toLowerCase();
   var cat = (document.getElementById('filter-cat')||{value:''}).value;
   var list = products.filter(function(p){
@@ -234,11 +339,25 @@ function render(){
   }).join('');
 }
 
+function renderFiltered(){
+  if(window.currentProducts){
+    displayProducts(window.currentProducts);
+  }
+}
+
+async function render(){
+  var products = await getProducts();
+  window.currentProducts = products; // Store for modal access
+  displayProducts(products);
+}
+
 function openModal(id){
   id = id||'';
   document.getElementById('edit-id').value=id;
   document.getElementById('modal-title').textContent=id?'Editar producto':'Agregar producto';
-  var p = id ? getProducts().find(function(x){return x.id===id;}) : null;
+  // We'll need to load the product from the array when render is called
+  var products = window.currentProducts || [];
+  var p = id ? products.find(function(x){return x.id===id;}) : null;
   document.getElementById('f-name').value=p?p.name:'';
   document.getElementById('f-cat').value=p?(p.cat||''):'';
   document.getElementById('f-price').value=p?(p.price||''):'';
@@ -251,10 +370,11 @@ function openModal(id){
   else{pw.classList.add('hidden');ph.classList.remove('hidden');}
   document.getElementById('modal-bg').classList.remove('hidden');
 }
+
 function closeModal(){ document.getElementById('modal-bg').classList.add('hidden'); }
 function bgClick(e){ if(e.target===document.getElementById('modal-bg')) closeModal(); }
 
-function saveProduct(){
+async function saveProductForm(){
   var name=document.getElementById('f-name').value.trim();
   if(!name){alert('El nombre es obligatorio');return;}
   var id=document.getElementById('edit-id').value||String(Date.now());
@@ -264,16 +384,16 @@ function saveProduct(){
     sizes:document.getElementById('f-sizes').value.trim(),
     desc:document.getElementById('f-desc').value.trim(),
     img:document.getElementById('f-img').value};
-  var products=getProducts();
-  var idx=products.findIndex(function(x){return x.id===id;});
-  if(idx>=0) products[idx]=p; else products.unshift(p);
-  setProducts(products); closeModal(); render();
+  
+  await saveProduct(p);
+  closeModal();
+  await render();
 }
 
-function delProd(id){
+async function delProd(id){
   if(!confirm('¿Eliminar este producto?')) return;
-  setProducts(getProducts().filter(function(x){return x.id!==id;}));
-  render();
+  await deleteProduct(id);
+  await render();
 }
 
 function previewImg(input){
@@ -288,8 +408,6 @@ function previewImg(input){
   };
   reader.readAsDataURL(file);
 }
-
-if(sessionStorage.getItem('mb_auth')==='1') render();
 </script>
 </body>
 </html>

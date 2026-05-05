@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#0d0812;font-family:'Montserrat',sans-serif;color:#c0a8d8;min-height:100vh}
@@ -62,6 +64,20 @@ body{background:#0d0812;font-family:'Montserrat',sans-serif;color:#c0a8d8;min-he
 </div>
 
 <script>
+// Firebase Configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBKA9aW1HpczB0pNB-4PyDqrFKaKI94LxM",
+  authDomain: "medussaboutique-85a25.firebaseapp.com",
+  projectId: "medussaboutique-85a25",
+  storageBucket: "medussaboutique-85a25.firebasestorage.app",
+  messagingSenderId: "184911346758",
+  appId: "1:184911346758:web:4d99b06118f16516245e47"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
 var WA = '573000000000';
 
 var DEMO = [
@@ -75,11 +91,42 @@ var DEMO = [
 
 function getProducts(){
   try{
-    var saved = JSON.parse(localStorage.getItem('mb_products')||'[]');
-    return saved.length ? saved : DEMO;
-  }catch(e){ return DEMO; }
+    const snapshot = db.collection('products').orderBy('createdAt', 'desc').get();
+    var list = [];
+    snapshot.then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        list.push({id: doc.id, ...doc.data()});
+      });
+    });
+    return list;
+  }catch(e){
+    console.error('Error loading products:', e);
+    return DEMO;
+  }
 }
-function getWA(){ return localStorage.getItem('mb_wa')||WA; }
+async function getProductsAsync(){
+  try{
+    const snapshot = await db.collection('products').orderBy('createdAt', 'desc').get();
+    var list = [];
+    snapshot.forEach(doc => {
+      list.push({id: doc.id, ...doc.data()});
+    });
+    return list.length ? list : DEMO;
+  }catch(e){
+    console.error('Error loading products:', e);
+    return DEMO;
+  }
+}
+async function getWA(){
+  try{
+    const doc = await db.collection('config').doc('whatsapp').get();
+    if(doc.exists) return doc.data().number || WA;
+    return WA;
+  }catch(e){
+    console.error('Error loading WA:', e);
+    return WA;
+  }
+}
 function fmt(n){ return '$'+Math.round(n).toLocaleString('es-CO'); }
 
 function updateCats(list){
@@ -92,8 +139,8 @@ function updateCats(list){
   }).join('');
 }
 
-function render(){
-  var all=getProducts();
+async function render(){
+  var all=await getProductsAsync();
   var q=document.getElementById('search').value.toLowerCase();
   var cat=document.getElementById('fcat').value;
   var list=all.filter(function(p){
@@ -105,7 +152,7 @@ function render(){
   var empty=document.getElementById('empty');
   if(!list.length){grid.innerHTML='';empty.classList.remove('hidden');return;}
   empty.classList.add('hidden');
-  var wa=getWA().replace(/\D/g,'');
+  var wa=(await getWA()).replace(/\D/g,'');
   grid.innerHTML=list.map(function(p,i){
     var msg='Hola Medusa Boutique! 💜 Me interesa:\n\n*'+p.name+'*'
       +(p.cat?' — '+p.cat:'')
@@ -142,6 +189,9 @@ function closeLb(){
   document.getElementById('lb-img').src='';
 }
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLb();});
+
+// Initial load
+render();
 
 render();
 </script>
